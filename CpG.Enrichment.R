@@ -4,25 +4,34 @@ CpG.Enrichment <- function(listA , listB ,Background.Size = NA, Background.list 
   # listB: A character vector of CpGs
   # Background.list: A character vector of CpGs or NA. 
   # Background.Size: An intager value or NA. It will be ignored if use.annotation=T
+  listA <- unique(listA[!is.na(listA)])
+  listB <- unique(listB[!is.na(listB)])
   
   if(use.annotation){
     suppressMessages(library(missMethyl))
     arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC"))
     arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC"))
-    
-    array1 <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
     array2 <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
-    
-    
-    listB = array2$entrezid[array2$cpg %in% listB]
-    if(all(is.na(Background.list))){
-      all_cpg <- intersect(array1$cpg , array2$cpg)
+    if(arrayTypeA != arrayTypeB){
+      array1 <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
+      if(all(is.na(Background.list))){
+        all_cpg <- intersect(array1$cpg , array2$cpg)
+      }else{
+        all_cpg <- Background.list
+      }
     }else{
-      all_cpg <- Background.list
+      if(all(is.na(Background.list))){
+        all_cpg <- array2$cpg
+      }else{
+        all_cpg <- Background.list
+      }
     }
-    results <- gsameth(sig.cpg = listA, all.cpg = all_cpg, collection = listB , 
-                       array.type = arrayTypeA, sig.genes=T)
     
+    listB = unique(array2$entrezid[array2$cpg %in% listB])
+    
+    results <- suppressMessages(gsameth(sig.cpg = listA, collection = listB ,all.cpg = all_cpg, 
+                       array.type = arrayTypeA, sig.genes=T))[,-4]
+    names(results) <- c("N.listB" , "N.Shared" , "P.value" , "Shared.Genes")
     }else{
       if(all(is.na(Background.list))){
         if(is.na(Background.Size)){
@@ -31,7 +40,7 @@ CpG.Enrichment <- function(listA , listB ,Background.Size = NA, Background.list 
           N <- Background.Size
         }
       }else{
-        warning("Background.list is specefied. Background.Size will be ignored.")
+        message("Background.list is specefied. Background.Size will be ignored.")
         N <- length(Background.list)
       }
       
@@ -46,7 +55,7 @@ CpG.Enrichment <- function(listA , listB ,Background.Size = NA, Background.list 
                           dimnames = list(B=c("inB","notB"),
                                           A=c("inA","notA")))
       f.test <- fisher.test(con.table, alternative = "greater")
-      results <- list(N=m , DE=k , P.DE = f.test$p.value , Shared.CpGs = paste(intersect(CpGs.Region , Input.CpGs),collapse = ";"))
+      results <- list(N.listB=m , N.Shared=k , P.value = f.test$p.value , Shared.CpGs = paste(shared.CpGs,collapse = ";"))
     }
   
   return(results)
