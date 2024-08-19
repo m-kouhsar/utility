@@ -1,22 +1,23 @@
-
-categorical.box.plot <- function(expression , phenotype, category.col, genes = NA, method, y.lab=NA, title="", facet.col = NA,category.labels){
+categorical.box.plot <- function(expression , phenotype, category.col, genes = NA, method, y.lab=NA, title="", facet.col = NA,category.labels=NA){
   
   suppressMessages(library(ggplot2))
   if(!identical(rownames(phenotype) , colnames(expression))){
     stop("Row names of phenotype data should be matched with colnames of expression data")
   }
-  if(length(genes) == 1){
-    if(all(is.na(genes)){
-      genes <- rownames(expression)
-    }
-  } 
+  if(all(is.na(genes))){
+    genes <- rownames(expression)
+  }
   
   method <- match.arg(method , c("pca","mean"))
   expression <- expression[genes , ]
   index <- apply(expression, 1, function(x){return(!all(is.na(x)))})
   expression <- expression[index , ]
   phenotype$x_ <- factor(phenotype[,category.col])
-
+  
+  if(all(is.na(category.labels))){
+    category.labels <- levels(phenotype$x_)
+  }
+  
   if(method == "pca"){
     pca <- prcomp(t(expression), center = T , scale. = T)
     phenotype$y_ <- pca$x[,1]
@@ -44,11 +45,10 @@ categorical.box.plot <- function(expression , phenotype, category.col, genes = N
     ggtitle(title) + 
     guides(fill=guide_legend(title=category.col)) + 
     theme_bw()
-   
-   if(!is.na(facet.col)){
-     p <- p + facet_grid(~f_)
-   }
-   
-   return(p)
+  
+  if(!is.na(facet.col)){
+    p <- p + facet_grid(~f_)
+  }
+  
+  return(p)
 }
-
