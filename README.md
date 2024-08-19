@@ -8,15 +8,16 @@ The following example describes the `categorical.box.plot` function in this scri
 expr.data <- as.data.frame(matrix(data = rnorm(n = 800 , mean = 0 , sd = 0.6), nrow = 20))
 names(expr.data) <- paste0("Sample" , c(1:40))
 rownames(expr.data) <- paste0("Gene" , c(1:20))
+head(expr.data)
 
 phenotype <- as.data.frame(matrix(data = NA , nrow = 40 , ncol = 2))
 rownames(phenotype) <- colnames(expr.data)
 names(phenotype) <- c("category" , "facet")
 phenotype$category[c(1:10 , 30:40)] <- "Case"
 phenotype$category[11:29] <- "Control"
-table(phenotype$category)
 phenotype$facet[1:20] <- "Cohort1"
 phenotype$facet[21:40] <- "Cohort2"
+head(phenotype)
 
 categorical.box.plot(expression = expr.data,phenotype = phenotype , category.col = "category" , facet.col = "facet" , method = "mean")
 ```
