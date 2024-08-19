@@ -1,12 +1,12 @@
 
-categorical.box.plot <- function(expression , phenotype, category.col, genes, method, y.lab=NA, title="", facet.col = NA,category.labels){
+categorical.box.plot <- function(expression , phenotype, category.col, genes = NA, method, y.lab=NA, title="", facet.col = NA,category.labels){
   
   suppressMessages(library(ggplot2))
   if(!identical(rownames(phenotype) , colnames(expression))){
     stop("Row names of phenotype data should be matched with colnames of expression data")
   }
   if(length(genes) == 1){
-    if(genes == "all"){
+    if(all(is.na(genes)){
       genes <- rownames(expression)
     }
   } 
