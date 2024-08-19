@@ -2,7 +2,7 @@
 ## Biomart.FindGenes.R
 It's an R function to find all genes annotated around a list of CpGs (CpG location +- a distance) using Biomart package. 
 ## CategoricalBoxPlot.R
-The following example will describe the `categorical.box.plot` function. 
+The following example describes the `categorical.box.plot` function in this script. 
 
 ```R
 expr.data <- as.data.frame(matrix(data = rnorm(n = 800 , mean = 0 , sd = 0.6), nrow = 20))
