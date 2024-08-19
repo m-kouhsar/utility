@@ -21,7 +21,7 @@ CpG.Enrichment <- function(listA , listB ,Background.Size = NA, Background.list 
       }
     }else{
       if(all(is.na(Background.list))){
-        all_cpg <- array2$cpg
+        all_cpg <- unique(array2$cpg)
       }else{
         all_cpg <- Background.list
       }
@@ -40,7 +40,6 @@ CpG.Enrichment <- function(listA , listB ,Background.Size = NA, Background.list 
           N <- Background.Size
         }
       }else{
-        message("Background.list is specefied. Background.Size will be ignored.")
         N <- length(Background.list)
       }
       
