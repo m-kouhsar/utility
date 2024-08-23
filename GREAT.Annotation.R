@@ -19,17 +19,3 @@ great.annotation <- function(CpG,genome="hg19",distance=1000){
   
   return(CpG)
 }
-
-#################################################################
-setwd("Brain EWAS Paper/WGCNA.Paper/Revision.June2024/")
-cpg.list <- read.csv("darkgreen.CpGs.Annot.csv")
-
-cpg.data <- data.frame(CpG.ID=cpg.list$CpG.ID,
-                       chr=paste0("chr",cpg.list$Chr),
-                       start=as.numeric(cpg.list$Genomic.position),
-                       end=as.numeric(cpg.list$Genomic.position))
-cpg.annot = great.annotation(CpG = cpg.data , genome = "hg19",distance = 1000)
-
-identical(cpg.list$CpG.ID , cpg.annot$CpG.ID)
-cpg.list$GREAT.annotation = cpg.annot$GREAT.Annotation
-write.csv(cpg.list , file = "darkgreen.CpGs.Annot1.csv", row.names = F)
