@@ -1,4 +1,6 @@
 # utility
+## GREAT.Annotation
+Using `rGREAT` package to map a list of CpGs (a data frame contains at least three columns: "chr", "start", "end") to the clostest Transcription Start Site (TSS). For more details see [rGREAT](https://jokergoo.github.io/rGREAT/index.html). 
 ## Biomart.FindGenes.R
 It's an R function to find all genes annotated around a list of CpGs (CpG location +- a distance) using Biomart package. 
 ## CategoricalBoxPlot.R
