@@ -38,7 +38,7 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
     
     results <- suppressMessages(gsameth(sig.cpg = listA, collection = listB ,all.cpg = all_cpg, 
                        array.type = arrayTypeA, sig.genes=T))[,-4]
-    results <- cbind.data.frame(length(unique(listA)) , results)
+    results <- cbind.data.frame(length(listA) , results)
     names(results) <- c("N.listA","N.listB" , "N.Shared" , "P.value" , "Shared.Genes")
     
     }else{
