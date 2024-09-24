@@ -9,15 +9,16 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
   # use.missMethyl: If TRUE the gsameth function in missMethyl package will be used. In this case both listA and listB must contain CpG IDs
   
   #######################################################################################
-  
+  suppressMessages(library(missMethyl))
   listA <- unique(listA[!is.na(listA)])
   listB <- unique(listB[!is.na(listB)])
   
   if(use.missMethyl){
-    suppressMessages(library(missMethyl))
+    
     arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC"))
     arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC"))
     arrayB <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
+    
     if(arrayTypeA != arrayTypeB){
       warning("Two different array types!")
       array1 <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
@@ -50,12 +51,12 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
         if(listA.type == "symbol"){
           message("Mapping listB to gene symbols...")
           arrayB = missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
-          listB =  arrayB$symbol[arrayB$cpg %in% listB]
+          listB =  unique(arrayB$symbol[arrayB$cpg %in% listB])
         }
         if(listB.type == "symbol"){
           message("Mapping listA to gene symbols...")
           arrayA = missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
-          listA =  arrayA$symbol[arrayA$cpg %in% listA]
+          listA =  unique(arrayA$symbol[arrayA$cpg %in% listA])
         }
       }
       
