@@ -117,7 +117,7 @@ CpG.Enrichment <- function(listA , listB , Background.Size = NA,
               }
             }else{ # both lists are gene symbols
               
-              N <- length(unique(arrayA$symbol))
+              stop("Both list are gene symbols. Background.list or Background.Size must be specified.")
               
             }
           }# End of III
