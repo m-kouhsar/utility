@@ -25,5 +25,4 @@ categorical.box.plot(expression = expr.data,phenotype = phenotype , category.col
 ```
 
 ## CpG.Enrichment.R
-It's an R function to run an enrichment analysis on two list of CpGs (or gene symbols) to find whether list A is overrepresented in list B using a Fisher's exact test. If you set the `use.annotation` parameter to `TRUE`, it will use `gsameth` function in `missMethyl` package in R to run the enrichment analysis in gene level. 
-If one list contains CpG IDs and the other list gene symbol, it will use illumina annotation to map the CpG IDs in the second list and then run the Fisher's exact test. 
+It is an R function designed to run an enrichment analysis on two lists of CpGs (or gene symbols) to determine whether list A is overrepresented in list B using Fisher's exact test. If you set the `use.annotation` parameter to `TRUE`, it will use the `gsameth` function from the `missMethyl` package in R to perform the enrichment analysis at the gene level. If one list contains CpG IDs and the other contains gene symbols, it will use Illumina annotation to map the CpG IDs to the corresponding gene symbols in the second list before running Fisher's exact test.
