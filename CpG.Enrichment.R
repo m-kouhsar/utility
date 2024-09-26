@@ -12,26 +12,33 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
   suppressMessages(library(missMethyl))
   listA <- unique(listA[!is.na(listA)])
   listB <- unique(listB[!is.na(listB)])
+  arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC"))
+  arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC"))
+  
   
   if(use.missMethyl){
-    
-    arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC"))
-    arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC"))
+    if((listA.type != "illumina")|(listB.type != "illumina")){
+      stop("Only illumina IDs allowed if use.missMethyl=TRUE")
+    }
+    if(!is.na(Background.Size)){
+      warning("If use.missMethyl=TRUE Background.Size will be ignored.")
+    }
+  
     arrayB <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
     
-    if(arrayTypeA != arrayTypeB){
-      warning("Two different array types!")
-      array1 <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
-      if(all(is.na(Background.list))){
-        all_cpg <- intersect(array1$cpg , arrayB$cpg)
+    if(!all(is.na(Background.list))){ #background list is specified 
+      
+      all_cpg <- unique(Background.list)
+      
+    }else{ # No background list: We need to define it
+      
+      if(arrayTypeA != arrayTypeB){
+        
+        warning("Two different array types!")
+        arrayA <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
+        all_cpg <- intersect(arrayA$cpg , arrayB$cpg)
       }else{
-        all_cpg <- Background.list
-      }
-    }else{
-      if(all(is.na(Background.list))){
         all_cpg <- unique(arrayB$cpg)
-      }else{
-        all_cpg <- Background.list
       }
     }
     
@@ -42,33 +49,75 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
     results <- cbind.data.frame(length(listA) , results)
     names(results) <- c("N.listA","N.listB" , "N.Shared" , "P.value" , "Shared.Genes")
     
-    }else{
+    }else{ # don't use missMethyl
       
       listA.type = match.arg(listA.type , choices = c("illumina" , "symbol"))
       listB.type = match.arg(listB.type , choices = c("illumina" , "symbol"))
       
-      if(listA.type != listB.type){
+      if(listA.type != listB.type){ # Different ID lists (CpG IDs and Gene Symbols): CpGs in one list needs to be converted to gene symbol
         if(listA.type == "symbol"){
           message("Mapping listB to gene symbols...")
           arrayB = missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
           listB =  unique(arrayB$symbol[arrayB$cpg %in% listB])
+          if(all(is.na(Background.list))){
+            if(is.na(Background.Size))
+              N <- length(unique(arrayB$symbol))
+            else
+              N <- Background.Size
+          }else{
+            N <- length(unique(Background.list))
+          }
         }
         if(listB.type == "symbol"){
           message("Mapping listA to gene symbols...")
           arrayA = missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
           listA =  unique(arrayA$symbol[arrayA$cpg %in% listA])
+          if(all(is.na(Background.list))){
+            if(is.na(Background.Size))
+              N <- length(unique(arrayA$symbol))
+            else
+              N <- Background.Size
+          }else{
+            N <- length(unique(Background.list))
+          }
         }
-      }
-      
-      if(all(is.na(Background.list))){
-        if(is.na(Background.Size)){
-          stop("In case of use.annotation=F , one of the Background.list or Background.Size must be specified.")
-        }else{
-          N <- Background.Size
-        }
-      }else{
-        N <- length(unique(Background.list))
-      }
+        
+      }else{ #I: both lists have the same IDs
+        
+        if(!all(is.na(Background.list))){ #background list is specified 
+          
+          N <- length(unique(Background.list))
+          
+        }else{ #II: 
+          if(!is.na(Background.Size)){ #background size is specified
+            
+            N <- Background.Size
+            
+          }else{ #III: No background list, No background size: We need to define it
+            
+            arrayA <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
+            
+            if(listA.type == "illumina"){ # both lists are illumina IDs
+              
+              if(arrayTypeA != arrayTypeB){
+                
+                warning("Two different array types!")
+                arrayB <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
+                N <- length(unique(intersect(arrayA$cpg , arrayB$cpg)))
+                
+              }else{
+                
+                N <- length(unique(arrayA$cpg))
+                
+              }
+            }else{ # both lists are gene symbols
+              
+              N <- length(unique(arrayA$symbol))
+              
+            }
+          }# End of III
+        } # End of II
+      } # End of I
       
       n <- length(listA[!is.na(listA)])
       m <- length(listB[!is.na(listB)])
