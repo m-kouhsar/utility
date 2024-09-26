@@ -1,23 +1,31 @@
-CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="illumina", Background.Size = NA, 
+CpG.Enrichment <- function(listA , listB , Background.Size = NA, 
                            Background.list = NA, use.missMethyl=F , arrayTypeA="EPIC", arrayTypeB = "EPIC"){
   
   #######################################################################################
   # listA and listB: A character vector of CpG IDs (illumina) or Gene Symbol
-  # listA.type and listB.type: "illumina" if the corresponding list contains CpG IDs. "symbol" if corresponding list contains gene symbol
-  # Background.list: A character vector of CpGs or NA. 
+  
+  # arrayTypeA and arrayTypeB: 
+  #                            "450K" if the corresponding list contains CpG IDs from 450K illumina array. 
+  #                            "EPIC" if corresponding list contains CpG IDs from EPIC array.
+  #                            "symbol" if corresponding list contains gene symbols.
+  
+  # Background.list: A character vector of CpGs/gene symbols or NA. 
+  
   # Background.Size: An intager value or NA. It will be ignored if use.annotation=T
-  # use.missMethyl: If TRUE the gsameth function in missMethyl package will be used. In this case both listA and listB must contain CpG IDs
+  
+  # use.missMethyl: If TRUE the gsameth function in missMethyl package will be used. 
+  #                 In this case both listA and listB must contain CpG IDs
   
   #######################################################################################
   suppressMessages(library(missMethyl))
   listA <- unique(listA[!is.na(listA)])
   listB <- unique(listB[!is.na(listB)])
-  arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC"))
-  arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC"))
+  arrayTypeA <- match.arg(arrayTypeA, choices = c("450K" , "EPIC", "symbol"))
+  arrayTypeB <- match.arg(arrayTypeB, choices = c("450K" , "EPIC", "symbol"))
   
   
   if(use.missMethyl){
-    if((listA.type != "illumina")|(listB.type != "illumina")){
+    if((arrayTypeA == "symbol")|(arrayTypeB == "symbol")){
       stop("Only illumina IDs allowed if use.missMethyl=TRUE")
     }
     if(!is.na(Background.Size)){
@@ -51,11 +59,8 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
     
     }else{ # don't use missMethyl
       
-      listA.type = match.arg(listA.type , choices = c("illumina" , "symbol"))
-      listB.type = match.arg(listB.type , choices = c("illumina" , "symbol"))
-      
-      if(listA.type != listB.type){ # Different ID lists (CpG IDs and Gene Symbols): CpGs in one list needs to be converted to gene symbol
-        if(listA.type == "symbol"){
+      if(arrayTypeA != arrayTypeB){ # Dirrefent Array type
+        if(arrayTypeA == "symbol"){
           message("Mapping listB to gene symbols...")
           arrayB = missMethyl:::.getFlatAnnotation(array.type = arrayTypeB)
           listB =  unique(arrayB$symbol[arrayB$cpg %in% listB])
@@ -68,7 +73,7 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
             N <- length(unique(Background.list))
           }
         }
-        if(listB.type == "symbol"){
+        if(arrayTypeB == "symbol"){
           message("Mapping listA to gene symbols...")
           arrayA = missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
           listA =  unique(arrayA$symbol[arrayA$cpg %in% listA])
@@ -82,7 +87,7 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
           }
         }
         
-      }else{ #I: both lists have the same IDs
+      }else{ #I: simillar array type
         
         if(!all(is.na(Background.list))){ #background list is specified 
           
@@ -97,7 +102,7 @@ CpG.Enrichment <- function(listA , listB ,listA.type = "illumina", listB.type="i
             
             arrayA <- missMethyl:::.getFlatAnnotation(array.type = arrayTypeA)
             
-            if(listA.type == "illumina"){ # both lists are illumina IDs
+            if((arrayTypeA == "450K")|(arrayTypeA == "EPIC")){ # both lists are illumina IDs
               
               if(arrayTypeA != arrayTypeB){
                 
