@@ -2,7 +2,7 @@ library(biomaRt)
 library(data.table)
 arguments <- commandArgs(T)
 
-Input.File = arguments[1]
+Input.File <- arguments[1]
 Out.Prefix <- arguments[2]
 ID.col <- as.numeric(arguments[3])
 Genome.Ver <- arguments[4]
