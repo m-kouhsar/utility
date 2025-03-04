@@ -3,7 +3,7 @@
 #SBATCH --export=ALL # export all environment variables to the batch job.
 #SBATCH -D . # set working directory to .
 #SBATCH -p mrcq
-#SBATCH --time=15:00:00 # Maximum wall time for the job
+#SBATCH --time=5:00:00 # Maximum wall time for the job
 #SBATCH --nodes=1 # specify number of nodes.
 #SBATCH --ntasks-per-node=16 # specify number of processors.
 #SBATCH --mail-type=END # send email at job completion
@@ -12,6 +12,7 @@
 if [ $# -eq 0 ]
 then
   echo "Error: No accission supplied!"
+  exit 1
 elif [ $# -eq 1 ]
 then
   Acc_list_file=$1
