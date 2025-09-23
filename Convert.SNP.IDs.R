@@ -17,7 +17,7 @@ if(Genome.Ver=="GRCh37"){
   snp_mart = useMart("ENSEMBL_MART_SNP", dataset="hsapiens_snp", verbose = T)
 }
 snp_attributes = c("refsnp_id", "chr_name", "chrom_start","chrom_end","allele","allele_1")
-snp_ids = fread(file = Input.File , header = F , stringsAsFactors = F)
+snp_ids = fread(file = Input.File , header = F , stringsAsFactors = F,data.table = F)
 
 if(Sourc.ID == "rsid" ){
   
@@ -32,6 +32,7 @@ if(Sourc.ID == "rsid" ){
 }
 
 fwrite(results, file = paste0(Out.Prefix , "SNP.ID.txt"), row.names = F , sep = "\t",quote = F)
+
 
 
 
