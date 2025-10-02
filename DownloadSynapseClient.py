@@ -88,4 +88,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     # Call the main function with the user-provided arguments
-    download_files_from_synapse(args.authTokenFile, args.filepath, args.downloadLocation)
+    download_files_from_synapse(args.PATFile, args.SynapseIDFile, args.DownloadLocation)
