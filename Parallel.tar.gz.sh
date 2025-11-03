@@ -20,4 +20,4 @@ echo "Zipping $SourceDir ..."
 
 tar cf - $SourceDir | pigz > ${DestFilePrefix}.tar.gz
 
-echo "All done! The zipped file saved in $DestFilePrefix"
+echo "All done! The zipped file saved in ${DestFilePrefix}.tar.gz"
