@@ -40,9 +40,9 @@ if (!genome %in% c("hg38", "hg19")) {
 
 # 2. Dynamic package verification based on runtime choices
 if (genome == "hg38") {
-  if (!requireNamespace("SNPlocs.Hsapiens.dbSNP155.GRCh38", quietly = TRUE)) stop("Missing dependency: SNPlocs.Hsapiens.dbSNP155.GRCh38")
+  if (!requireNamespace("SNPlocs.Hsapiens.dbSNP144.GRCh38", quietly = TRUE)) stop("Missing dependency: SNPlocs.Hsapiens.dbSNP144.GRCh38")
   if (!requireNamespace("BSgenome.Hsapiens.UCSC.hg38", quietly = TRUE)) stop("Missing dependency: BSgenome.Hsapiens.UCSC.hg38")
-  snp_db <- SNPlocs.Hsapiens.dbSNP155.GRCh38::SNPlocs.Hsapiens.dbSNP155.GRCh38
+  snp_db <- SNPlocs.Hsapiens.dbSNP144.GRCh38::SNPlocs.Hsapiens.dbSNP144.GRCh38
   genome_db <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 } else {
   if (!requireNamespace("SNPlocs.Hsapiens.dbSNP144.GRCh37", quietly = TRUE)) stop("Missing dependency: SNPlocs.Hsapiens.dbSNP144.GRCh37")
