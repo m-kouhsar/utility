@@ -1,15 +1,15 @@
-########################################################################################################
-#                                                                                                      #
-# Using biomaRt and dbSNP to convert SNP IDs                                                           #
-#                                                                                                      #
-# Input arguments:                                                                                     #
-#                 Input.File: The file contains source IDs (rsid or chr:pos:Ref:Alt format)            #
-#                 Out.Prefix: Output files prefix (Directories will be created if it contains path)    #
-#                 ID.col: the source ID column name or index in the input file                         #
-#                 Genom.Ver: Genome version to use for conversion (GRCh37" or "GRCh38")                #
-#                 Source.ID: Source ID type ("rsid" or "chr:pos")                                      #
-#                                                                                                      #
-########################################################################################################
+######################################################################################################################
+#                                                                                                                    #
+# Using biomaRt and dbSNP to convert SNP IDs                                                                         #
+#                                                                                                                    #
+# Input arguments:                                                                                                   #
+#                 Input.File: The file contains source IDs (rsid or chr:pos:Ref:Alt format)                          #
+#                 Out.Prefix: Output files prefix (Directories will be created if it contains path)                  #
+#                 ID.col: the source ID column name or index in the input file                                       #
+#                 Genom.Ver: Genome version to use for conversion (GRCh37" or "GRCh38"). It is NOT case sensitive.   #
+#                 Source.ID: Source ID type ("rsid" or "chr:pos")                                                    #
+#                                                                                                                    #
+######################################################################################################################
 
 message("Loading reqiuered libraries...")
 library(biomaRt)
@@ -20,7 +20,7 @@ message("Reading input data...")
 Input.File <- trimws(arguments[1])
 Out.Prefix <- trimws(arguments[2])
 ID.col <- trimws(arguments[3])
-Genome.Ver <- trimws(arguments[4])
+Genome.Ver <- tolower(trimws(arguments[4]))
 Sourc.ID <- trimws(arguments[5])
 
 Out.dir <- dirname(Out.Prefix)
@@ -44,9 +44,9 @@ if(is.na(ID.col.num)){
 }
 
 message("Connecting to BioMart database...")
-if(Genome.Ver=="GRCh37"){
+if(Genome.Ver=="grch37"){
   snp_mart = useMart("ENSEMBL_MART_SNP", dataset="hsapiens_snp",host = "https://grch37.ensembl.org", verbose = T)
-}else if(Genome.Ver=="GRCh38"){
+}else if(Genome.Ver=="grch38"){
   snp_mart = useMart("ENSEMBL_MART_SNP", dataset="hsapiens_snp", verbose = T)
 }
 snp_attributes = c("refsnp_id", "chr_name", "chrom_start","chrom_end","allele","allele_1")
