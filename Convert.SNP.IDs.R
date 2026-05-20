@@ -28,7 +28,7 @@ if(!dir.exists(Out.dir)){
   dir.create(Out.dir , recursive = T)
 }
 
-Genome.Ver <- match.arg(Genome.Ver , choices = c("GRCh37","GRCh38"))
+Genome.Ver <- match.arg(Genome.Ver , choices = c("grch37","grch38"))
 Sourc.ID <- match.arg(Sourc.ID , choices = c("rsid" , "chr:pos"))
 
 snp_ids = fread(file = Input.File , header = F , stringsAsFactors = F,data.table = F)
